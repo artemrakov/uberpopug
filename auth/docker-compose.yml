@@ -1,0 +1,26 @@
+---
+
+version: '3'
+
+services:
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'make start'
+    ports:
+      - '80:3000'
+    volumes:
+      - .:/root/code/uberpopug/auth
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
