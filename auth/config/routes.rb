@@ -5,4 +5,5 @@ Rails.application.routes.draw do
 
   root 'accounts#index'
   resources :accounts, only: [:new, :create]
+  resource :session, only: %i[new create destroy]
 end

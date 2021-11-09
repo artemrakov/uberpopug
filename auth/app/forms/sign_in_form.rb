@@ -10,7 +10,7 @@ class SignInForm
   validate :account_exists, :account_can_sign_in
 
   def account_can_sign_in
-    errors.add(:password, :cannot_sign_in) if password.present? && !account&.valid_password?(password)
+    errors.add(:password, :cannot_sign_in) if password.present? && !account&.authenticate(password)
   end
 
   def account_exists

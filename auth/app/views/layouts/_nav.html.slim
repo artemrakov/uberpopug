@@ -4,7 +4,7 @@
     ul.nav.nav-pills
       - if signed_in?
         = nav_menu_item "Accounts", root_path, method: :delete
-        = nav_menu_item "Sign out", "#", method: :delete
+        = nav_menu_item "Sign out", session_path, method: :delete
       - else
-        = nav_menu_item "Sign in", "#"
+        = nav_menu_item "Sign in", new_session_path
         = nav_menu_item "Register", new_account_path

@@ -6,7 +6,7 @@ module AuthConcern
   end
 
   def sign_out
-    session.delete(:user_id)
+    session.delete(:account_id)
     session.clear
   end
 
