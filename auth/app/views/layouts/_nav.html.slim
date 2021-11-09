@@ -1,0 +1,10 @@
+.container
+  header.d-flex.flex-wrap.align-items-center.justify-content-center.justify-content-md-between.py-3.mb-4.border-bottom
+    a.d-flex.align-items-center.mb-2.mb-md-0.me-5.text-dark.text-decoration-none.fs-4(href="/") Auth
+    ul.nav.nav-pills
+      - if signed_in?
+        = nav_menu_item "Accounts", root_path, method: :delete
+        = nav_menu_item "Sign out", "#", method: :delete
+      - else
+        = nav_menu_item "Sign in", "#"
+        = nav_menu_item "Register", new_account_path

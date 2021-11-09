@@ -31,6 +31,7 @@ db-prepare:
 	bin/rails db:create || true
 	bin/rails db:schema:load || true
 	bin/rails db:migrate || true
+	bin/rails db:fixtures:load || true
 
 webpacker:
 	bin/webpack-dev-server
@@ -52,5 +53,14 @@ compose-stop:
 
 compose-restart:
 	docker-compose restart
+
+app-bash:
+	docker-compose run --rm auth /bin/bash
+
+app-test:
+	docker-compose run --rm auth make test
+
+app-rails-console:
+	docker-compose run --rm auth bin/rails c
 
 .PHONY: test
