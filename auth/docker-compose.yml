@@ -16,7 +16,7 @@ services:
       dockerfile: Dockerfile
     command: 'make start'
     ports:
-      - '80:3000'
+      - '3000:3000'
     volumes:
       - .:/root/code/uberpopug/auth
     depends_on:

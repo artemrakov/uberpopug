@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AccountsController < ApplicationController
-  before_action :authenticate_account!, only: :index
+  before_action :authenticate_account!, only: [:index, :current]
 
   def index
     @accounts = Account.all
@@ -20,5 +20,9 @@ class AccountsController < ApplicationController
     else
       render :new
     end
+  end
+
+  def current
+    @account = current_account
   end
 end

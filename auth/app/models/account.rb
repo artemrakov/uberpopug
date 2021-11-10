@@ -14,7 +14,12 @@ class Account < ApplicationRecord
            foreign_key: :resource_owner_id,
            dependent: :delete_all
 
-  enum role: { admin: 'admin', employee: 'employee' }, _default: 'admin'
+  enum role: {
+    admin: 'admin',
+    employee: 'employee',
+    repairman: 'repairman',
+    accounting_clerk: 'accounting_clerk'
+  }, _default: 'admin'
 
   aasm :state do
     state :active, initial: true

@@ -17,6 +17,7 @@ gem 'sass-rails', '>= 6'
 gem 'simple_form'
 gem 'slim-rails'
 gem 'webpacker', '~> 5.0'
+gem 'omniauth-oauth2'
 
 gem 'bootsnap', '>= 1.4.4', require: false
 
