@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
 
     if @sign_in.valid?
       sign_in @sign_in.account
-      redirect_to root_path
+      redirect_to params[:return_to] || root_path
     else
       render :new
     end

@@ -3,7 +3,7 @@
     a.d-flex.align-items-center.mb-2.mb-md-0.me-5.text-dark.text-decoration-none.fs-4(href="/") Auth
     ul.nav.nav-pills
       - if signed_in?
-        = nav_menu_item "Accounts", root_path, method: :delete
+        = nav_menu_item "Accounts", root_path
         = nav_menu_item "Sign out", session_path, method: :delete
       - else
         = nav_menu_item "Sign in", new_session_path
