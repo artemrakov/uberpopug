@@ -1,0 +1,12 @@
+.container
+  .row
+    .col-sm-8.col-md-7.col-lg-6.mt-3.mb-5
+      h1.mb-4.mb-lg-5 = @account.email
+      = simple_form_for @account do |f|
+        = f.input :full_name
+        = f.input :email
+        = f.submit class: 'btn btn-primary mt-4 btn-block'
+      br
+      = simple_form_for @account, url: set_role_account_path(@account), method: :put do |f|
+        = f.input :role, collection: Account.roles, include_blank: false
+        = f.submit 'Update role', class: 'btn btn-primary mt-4 btn-block'

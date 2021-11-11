@@ -18,6 +18,7 @@ gem 'simple_form'
 gem 'slim-rails'
 gem 'webpacker', '~> 5.0'
 gem 'omniauth-oauth2'
+gem 'waterdrop', '~> 1.4'
 
 gem 'bootsnap', '>= 1.4.4', require: false
 
