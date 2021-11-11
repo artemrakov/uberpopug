@@ -22,6 +22,7 @@ class AccountsController < ApplicationController
           public_id: @account.public_id,
           email: @account.email,
           full_name: @account.full_name,
+          role: @account.role,
           position: @account.position
         }
       }
