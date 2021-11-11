@@ -4,7 +4,7 @@ module OmniAuth
       option :name, :popug
 
       option :client_options, {
-        site: 'http://localhost:3000/oauth/authorize',
+        site: 'http://localhost:3000',
         authorize_url: 'http://localhost:3000/oauth/authorize'
       }
 
@@ -15,7 +15,7 @@ module OmniAuth
           email: raw_info['email'],
           full_name: raw_info['full_name'],
           position: raw_info['position'],
-          state: raw_info['active'],
+          state: raw_info['state'],
           role: raw_info['role'],
           public_id: raw_info['public_id']
         }
