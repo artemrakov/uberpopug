@@ -6,8 +6,10 @@ ul
   li = current_account.public_id
 
 = link_to "Create new task", new_task_path, class: 'btn btn-primary my-2'
-
+br
 - if current_account.admin?
+  = link_to "Reassign", reassign_tasks_path, class: 'btn btn-primary my-2', method: :post
+
   h2 All tasks
   table.table.my-2
     thead
@@ -15,6 +17,7 @@ ul
         th Id
         th Description
         th Employee
+        th Status
         th
     tbody
       - @tasks.each do |task|
@@ -22,7 +25,8 @@ ul
           td = task.id
           td = task.description
           td = task.employee
-          td = link_to "Complete", "#"
+          td = task.status
+          td = link_to "Complete", complete_task_path(task), method: :post
 - else
   h2 My tasks
   table.table.my-2
@@ -31,6 +35,7 @@ ul
         th Id
         th Description
         th Employee
+        th Status
         th
     tbody
       - current_account.tasks.each do |task|
@@ -38,4 +43,5 @@ ul
           td = task.id
           td = task.description
           td = task.employee
-          td = link_to "Complete", "#"
+          td = task.status
+          td = link_to "Complete", complete_task_path(task), method: :post
