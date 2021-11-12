@@ -5,6 +5,10 @@ class Account < ApplicationRecord
 
   has_secure_password
 
+  after_save do
+    reload
+  end
+
   has_many :access_grants,
            class_name: 'Doorkeeper::AccessGrant',
            foreign_key: :resource_owner_id,

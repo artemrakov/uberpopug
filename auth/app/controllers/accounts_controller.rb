@@ -16,17 +16,8 @@ class AccountsController < ApplicationController
 
     if @account.save
       sign_in @account
-      event = {
-        event_name: 'AccountCreated',
-        data: {
-          public_id: @account.public_id,
-          email: @account.email,
-          full_name: @account.full_name,
-          role: @account.role,
-          position: @account.position
-        }
-      }
 
+      event = AccountEvent.created(@account)
       WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts-stream')
       redirect_to params[:return_to] || root_path
     else
@@ -42,15 +33,7 @@ class AccountsController < ApplicationController
     @account = Account.find(params[:id])
 
     if @account.update(account_params)
-      event = {
-        event_name: 'AccountUpdated',
-        data: {
-          public_id: @account.public_id,
-          email: @account.email,
-          full_name: @account.full_name,
-          position: @account.position
-        }
-      }
+      event = AccountEvent.updated(@account)
       WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts-stream')
 
       redirect_to root_path
@@ -63,11 +46,8 @@ class AccountsController < ApplicationController
     @account = Account.find(params[:id])
 
     if @account.update(role: account_params[:role])
-      event = {
-        event_name: 'AccountRoleChanged',
-        data: { public_id: @account.public_id, role: @account.role }
-      }
 
+      event = AccountEvent.role_changed(@account)
       WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts')
       redirect_to root_path
     else
@@ -79,10 +59,7 @@ class AccountsController < ApplicationController
     @account = Account.find(params[:id])
     @account.mark_as_removed!
 
-    event = {
-      event_name: 'AccountDeleted',
-      data: { public_id: @account.public_id }
-    }
+    event = AccountEvent.deleted(@account)
     WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts-stream')
 
     redirect_to root_path
