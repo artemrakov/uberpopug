@@ -19,6 +19,7 @@ class AccountsController < ApplicationController
 
       event = AccountEvent.created(@account)
       WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts-stream')
+
       redirect_to params[:return_to] || root_path
     else
       render :new
