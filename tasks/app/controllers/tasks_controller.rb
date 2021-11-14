@@ -56,8 +56,7 @@ class TasksController < ApplicationController
     event = {
       event_name: 'TaskCompleted',
       data: {
-        public_id: task.public_id,
-        status: 'completed'
+        public_id: task.public_id
       }
     }
     WaterDrop::SyncProducer.call(event.to_json, topic: 'tasks-lifecycle')
