@@ -60,7 +60,7 @@ class TasksController < ApplicationController
         status: 'completed'
       }
     }
-    WaterDrop::SyncProducer.call(event.to_json, topic: 'tasks')
+    WaterDrop::SyncProducer.call(event.to_json, topic: 'tasks-lifecycle')
 
     redirect_to root_path
   end
