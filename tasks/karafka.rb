@@ -18,6 +18,8 @@ class KarafkaApp < Karafka::App
   setup do |config|
     config.client_id = 'tasks_service'
     config.kafka.seed_brokers = %w[kafka://206.81.22.88:9092]
+    config.batch_fetching = true
+    config.batch_consuming = true
     config.logger = Rails.logger
   end
 
