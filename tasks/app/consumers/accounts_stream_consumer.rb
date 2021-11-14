@@ -1,11 +1,11 @@
 class AccountsStreamConsumer < ApplicationConsumer
   def consume
-    params_batch.each do |message|
+    params_batch.payloads.each do |payload|
       puts '-' * 80
-      p message
+      p payload
       puts '-' * 80
 
-      send(message.payload['event_name'].underscore, message.payload['data'])
+      send(payload['event_name'].underscore, payload['data'])
     end
   end
 
@@ -19,15 +19,19 @@ class AccountsStreamConsumer < ApplicationConsumer
   end
 
   def account_updated(data)
-    account = Account.find_by(public_id: data['public_id'])
-    account.update!(
-      email: data['email'],
-      full_name: data['full_name']
-    )
+    Account.transaction do
+      account = Account.find_by(public_id: data['public_id'])
+      account.update!(
+        email: data['email'],
+        full_name: data['full_name']
+      )
+    end
   end
 
   def account_deleted(data)
-    account = Account.find_by(public_id: data['public_id'])
-    account.destroy!
+    Account.transaction do
+      account = Account.find_by(public_id: data['public_id'])
+      account.destroy!
+    end
   end
 end

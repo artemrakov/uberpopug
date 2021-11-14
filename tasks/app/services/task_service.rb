@@ -3,9 +3,18 @@ class TaskService
     tasks.each do |task|
       task.employee = employees.sample
       task.save!
-
-      event = TaskEvent.reassigned(task)
-      WaterDrop::SyncProducer.call(event.to_json, topic: 'tasks')
     end
+
+    events = tasks.map do |task|
+      {
+        event_name: 'TaskReassigned',
+        data: {
+          public_id: task.public_id,
+          employee_public_id: task.employee.public_id
+        }
+      }.to_json
+    end
+
+    WaterDrop::SyncProducer.batch_call(events, topic: 'tasks-lifecycle')
   end
 end

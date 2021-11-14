@@ -15,10 +15,24 @@ class TasksController < ApplicationController
     @task.employee = employee
 
     if @task.save
-      created_event = TaskEvent.created(@task)
+      created_event = {
+        event_name: 'TaskCreated',
+        data: {
+          description: @task.description,
+          public_id: @task.public_id,
+          status: @task.status,
+          employee_public_id: @task.employee.public_id
+        }
+      }
       WaterDrop::SyncProducer.call(created_event.to_json, topic: 'tasks-stream')
 
-      assigned_event = TaskEvent.assigned(@task)
+      assigned_event = {
+        event_name: 'TaskAssigned',
+        data: {
+          public_id: @task.public_id,
+          employee_public_id: @task.employee.public_id
+        }
+      }
       WaterDrop::SyncProducer.call(assigned_event.to_json, topic: 'tasks')
 
       redirect_to root_path
@@ -39,7 +53,13 @@ class TasksController < ApplicationController
     task = Task.find(params[:id])
     task.complete!
 
-    event = TaskEvent.completed(task)
+    event = {
+      event_name: 'TaskCompleted',
+      data: {
+        public_id: task.public_id,
+        status: 'completed'
+      }
+    }
     WaterDrop::SyncProducer.call(event.to_json, topic: 'tasks')
 
     redirect_to root_path
