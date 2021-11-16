@@ -14,6 +14,9 @@ start:
 	rm -rf tmp/pids/server.pid
 	bundle exec rails s -p 2300 -b '0.0.0.0'
 
+kafka:
+	bundle exec karafka server
+
 clean:
 	bin/rails db:drop
 

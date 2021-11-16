@@ -8,13 +8,17 @@ ruby '3.0.2'
 gem 'aasm'
 gem 'active_form_model', github: 'Hexlet/active_form_model'
 gem 'bcrypt', '~> 3.1.7'
+gem 'doorkeeper'
 gem 'jbuilder', '~> 2.7'
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
 gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
 gem 'sass-rails', '>= 6'
+gem 'simple_form'
 gem 'slim-rails'
 gem 'webpacker', '~> 5.0'
+gem 'omniauth-oauth2'
+gem 'waterdrop', '~> 1.4'
 
 gem 'bootsnap', '>= 1.4.4', require: false
 

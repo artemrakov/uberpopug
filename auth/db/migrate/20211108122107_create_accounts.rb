@@ -1,7 +1,7 @@
 class CreateAccounts < ActiveRecord::Migration[6.1]
   def change
     create_table :accounts do |t|
-      t.string :email
+      t.string :email, index: true, unique: true
       t.string :password_digest
       t.string :full_name
       t.string :state

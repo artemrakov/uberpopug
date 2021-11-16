@@ -1,0 +1,22 @@
+table.table.my-2
+  thead
+    tr
+      th Id
+      th Email
+      th Full name
+      th State
+      th Role
+      th Public id
+      th
+      th
+  tbody
+    - @accounts.each do |account|
+      tr
+        td = account.id
+        td = account.email
+        td = account.full_name
+        td = account.state
+        td = account.role
+        td = account.public_id
+        td = link_to "Edit", edit_account_path(account)
+        td = link_to "Delete", account_path(account), method: :delete

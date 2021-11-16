@@ -13,6 +13,11 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'simple_form'
 gem 'aasm'
 gem 'slim-rails'
+gem 'omniauth-uberpopug'
+gem 'omniauth-rails_csrf_protection'
+gem 'dotenv-rails', groups: [:development, :test]
+gem 'karafka'
+gem 'waterdrop'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

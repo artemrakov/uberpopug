@@ -4,3 +4,7 @@
 /*/node_modules
 /*/config/master.key
 /*/vendor
+/*/public/assets
+/*/public/packs
+/*/public/packs-test
+/*/.env
