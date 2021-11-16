@@ -5,14 +5,17 @@ class AccountsConsumer < ApplicationConsumer
       p payload
       puts '-' * 80
 
-      send(payload['event_name'].underscore, payload['data'])
-    end
-  end
+      data = payload['data']
 
-  def account_role_changed(data)
-    Account.transaction do
-      account = Account.find_by(public_id: data['public_id'])
-      account.update!(role: data['role'])
+      case payload['event_name']
+      when 'AccountRoleChanged'
+        Account.transaction do
+          account = Account.find_by(public_id: data['public_id'])
+          account.update!(role: data['role'])
+        end
+      else
+        # store in db
+      end
     end
   end
 end

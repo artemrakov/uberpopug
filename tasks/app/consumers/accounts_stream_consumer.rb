@@ -5,33 +5,32 @@ class AccountsStreamConsumer < ApplicationConsumer
       p payload
       puts '-' * 80
 
-      send(payload['event_name'].underscore, payload['data'])
-    end
-  end
+      data = payload['data']
 
-  def account_created(data)
-    Account.create!(
-      public_id: data['public_id'],
-      email: data['email'],
-      role: data['role'],
-      full_name: data['full_name']
-    )
-  end
-
-  def account_updated(data)
-    Account.transaction do
-      account = Account.find_by(public_id: data['public_id'])
-      account.update!(
-        email: data['email'],
-        full_name: data['full_name']
-      )
-    end
-  end
-
-  def account_deleted(data)
-    Account.transaction do
-      account = Account.find_by(public_id: data['public_id'])
-      account.destroy!
+      case payload['event_name']
+      when 'AccountCreated'
+        Account.create!(
+          public_id: data['public_id'],
+          email: data['email'],
+          role: data['role'],
+          full_name: data['full_name']
+        )
+      when 'AccountUpdated'
+        Account.transaction do
+          account = Account.find_by(public_id: data['public_id'])
+          account.update!(
+            email: data['email'],
+            full_name: data['full_name']
+          )
+        end
+      when 'AccountDeleted'
+        Account.transaction do
+          account = Account.find_by(public_id: data['public_id'])
+          account.destroy!
+        end
+      else
+        # store in db
+      end
     end
   end
 end
