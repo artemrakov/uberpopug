@@ -19,6 +19,7 @@ gem 'slim-rails'
 gem 'webpacker', '~> 5.0'
 gem 'omniauth-oauth2'
 gem 'waterdrop', '~> 1.4'
+gem 'schema_registry', path: '../event_schema_registry/ruby/'
 
 gem 'bootsnap', '>= 1.4.4', require: false
 
