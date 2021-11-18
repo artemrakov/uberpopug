@@ -16,7 +16,7 @@ class AccountMutator
           }
         }
 
-        send_event!(event: event, type: 'accounts.created', version: 1, topic: 'accounts-stream')
+        send_event(event: event, type: 'accounts.created', version: 1, topic: 'accounts-stream')
       end
 
       account
@@ -39,7 +39,7 @@ class AccountMutator
           position: account.position
         }
       }
-      send_event!(event: event, type: 'accounts.updated', version: 1, topic: 'accounts-stream')
+      send_event(event: event, type: 'accounts.updated', version: 1, topic: 'accounts-stream')
 
       account
     end
@@ -59,7 +59,7 @@ class AccountMutator
         }
       }
 
-      send_event!(event: event, type: 'accounts.role_changed', version: 1, topic: 'accounts')
+      send_event(event: event, type: 'accounts.role_changed', version: 1, topic: 'accounts')
 
       account
     end
@@ -73,7 +73,9 @@ class AccountMutator
         data: { public_id: account.public_id }
       }
 
-      send_event!(event: event, type: 'accounts.deleted', version: 1, topic: 'accounts')
+      send_event(event: event, type: 'accounts.deleted', version: 1, topic: 'accounts-stream')
+
+      account
     end
 
     def account_event_data
@@ -85,7 +87,7 @@ class AccountMutator
       }
     end
 
-    def send_event!(event:, type:, version:, topic:)
+    def send_event(event:, type:, version:, topic:)
       result = SchemaRegistry.validate_event(event, type, version: version)
 
       if result.success?
