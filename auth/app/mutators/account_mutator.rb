@@ -16,7 +16,7 @@ class AccountMutator
           }
         }
 
-        send_event(event: event, type: 'accounts.created', version: 1, topic: 'accounts-stream')
+        EventSender.serve!(event: event, type: 'accounts.created', version: 1, topic: 'accounts-stream')
       end
 
       account
@@ -27,7 +27,7 @@ class AccountMutator
 
       return false unless account.valid?
 
-      account.save
+      account.save!
 
       event = {
         **account_event_data,
@@ -39,7 +39,7 @@ class AccountMutator
           position: account.position
         }
       }
-      send_event(event: event, type: 'accounts.updated', version: 1, topic: 'accounts-stream')
+      EventSender.serve!(event: event, type: 'accounts.updated', version: 1, topic: 'accounts-stream')
 
       account
     end
@@ -49,7 +49,7 @@ class AccountMutator
 
       return false unless account.valid?
 
-      account.save
+      account.save!
       event = {
         **account_event_data,
         event_name: 'AccountRoleChanged',
@@ -59,7 +59,7 @@ class AccountMutator
         }
       }
 
-      send_event(event: event, type: 'accounts.role_changed', version: 1, topic: 'accounts')
+      EventSender.serve!(event: event, type: 'accounts.role_changed', version: 1, topic: 'accounts')
 
       account
     end
@@ -73,7 +73,7 @@ class AccountMutator
         data: { public_id: account.public_id }
       }
 
-      send_event(event: event, type: 'accounts.deleted', version: 1, topic: 'accounts-stream')
+      EventSender.serve!(event: event, type: 'accounts.deleted', version: 1, topic: 'accounts-stream')
 
       account
     end
@@ -85,16 +85,6 @@ class AccountMutator
         event_time: Time.zone.now.to_s,
         producer: 'auth_service'
       }
-    end
-
-    def send_event(event:, type:, version:, topic:)
-      result = SchemaRegistry.validate_event(event, type, version: version)
-
-      if result.success?
-        WaterDrop::SyncProducer.call(event.to_json, topic: topic)
-      else
-        raise result
-      end
     end
   end
 end

@@ -12,7 +12,7 @@ class TasksController < ApplicationController
   def create
     @task = TaskMutator.create(task_params)
 
-    if @task.save
+    if @task.persisted?
       redirect_to root_path
     else
       render :new
