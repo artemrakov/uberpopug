@@ -31,16 +31,7 @@ class TasksController < ApplicationController
     task = Task.find(params[:id])
     task.complete!
 
-    event = {
-      event_id: SecureRandom.uuid,
-      event_version: 1,
-      event_time: Time.zone.now.to_s,
-      producer: 'task_service',
-      event_name: 'TaskCompleted',
-      data: {
-        public_id: task.public_id
-      }
-    }
+    event = LifecycleTaskEvent.new.completed(task)
     EventSender.serve!(event: event, type: 'tasks.completed', topic: 'tasks-lifecycle')
 
     redirect_to root_path
