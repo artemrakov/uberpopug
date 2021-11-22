@@ -1,4 +1,4 @@
 class Payment < ApplicationRecord
-  belongs_to :transactions
-  belongs_to :billing_cycles
+  belongs_to :transaction, class_name: 'Transaction::Payment'
+  belongs_to :billing_cycle
 end
