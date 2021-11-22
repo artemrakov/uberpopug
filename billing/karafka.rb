@@ -52,13 +52,13 @@ class KarafkaApp < Karafka::App
       consumer AccountsConsumer
     end
 
-    # topic 'tasks-stream' do
-    #   consumer TasksStreamConsumer
-    # end
+    topic 'tasks-stream' do
+      consumer TasksStreamConsumer
+    end
 
-    # topic 'tasks-lifecycle' do
-    #   consumer TasksLifecycleConsumer
-    # end
+    topic 'tasks-lifecycle' do
+      consumer TasksLifecycleConsumer
+    end
   end
 end
 

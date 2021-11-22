@@ -1,5 +1,5 @@
 class Transaction < ApplicationRecord
-  validates :entry, presence: true
+  validates :accounting_entry, presence: true
 
   after_save do
     reload
