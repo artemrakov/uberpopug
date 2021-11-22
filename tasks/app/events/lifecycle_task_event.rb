@@ -19,7 +19,8 @@ class LifecycleTaskEvent < BaseEvent
 
   def completed(task)
     data = {
-      public_id: task.public_id
+      public_id: task.public_id,
+      employee_public_id: task.employee.public_id
     }
 
     build_event('TaskCompleted', data)
