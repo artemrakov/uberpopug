@@ -30,10 +30,10 @@ ActiveRecord::Schema.define(version: 2021_11_22_122148) do
     t.string "provider"
     t.string "token"
     t.string "login"
-    t.bigint "accounts_id", null: false
+    t.bigint "account_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["accounts_id"], name: "index_auth_identities_on_accounts_id"
+    t.index ["account_id"], name: "index_auth_identities_on_account_id"
   end
 
   create_table "billing_cycles", force: :cascade do |t|
@@ -48,12 +48,12 @@ ActiveRecord::Schema.define(version: 2021_11_22_122148) do
   create_table "payments", force: :cascade do |t|
     t.string "amount"
     t.string "status"
-    t.bigint "transactions_id", null: false
-    t.bigint "billing_cycles_id", null: false
+    t.bigint "transaction_id", null: false
+    t.bigint "billing_cycle_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["billing_cycles_id"], name: "index_payments_on_billing_cycles_id"
-    t.index ["transactions_id"], name: "index_payments_on_transactions_id"
+    t.index ["billing_cycle_id"], name: "index_payments_on_billing_cycle_id"
+    t.index ["transaction_id"], name: "index_payments_on_transaction_id"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -67,15 +67,15 @@ ActiveRecord::Schema.define(version: 2021_11_22_122148) do
   create_table "transactions", force: :cascade do |t|
     t.string "type"
     t.jsonb "data"
-    t.string "entry"
+    t.string "accounting_entry"
     t.uuid "public_id", default: -> { "gen_random_uuid()" }, null: false
     t.integer "amount"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "auth_identities", "accounts", column: "accounts_id"
+  add_foreign_key "auth_identities", "accounts"
   add_foreign_key "billing_cycles", "accounts"
-  add_foreign_key "payments", "billing_cycles", column: "billing_cycles_id"
-  add_foreign_key "payments", "transactions", column: "transactions_id"
+  add_foreign_key "payments", "billing_cycles"
+  add_foreign_key "payments", "transactions"
 end

@@ -1,5 +1,4 @@
 class Transaction::Payment < Transaction
-  validates_with Transaction::PaymentValidator
 
   def description
     data['description']
@@ -21,7 +20,7 @@ class Transaction::Payment < Transaction
     data['employee_public_id']
   end
 
-  class Transaction::PaymentValidator < ActiveModel::Validator
+  class Validator < ActiveModel::Validator
     def validate(record)
       validation = data_schema.call(record[:data])
 
@@ -42,4 +41,6 @@ class Transaction::Payment < Transaction
       end
     end
   end
+
+  validates_with Validator
 end

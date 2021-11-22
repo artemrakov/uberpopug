@@ -1,7 +1,6 @@
 class Transaction::Charge < Transaction
-  validates_with Transaction::ChargeValidator
 
-  class Transaction::ChargeValidator < ActiveModel::Validator
+  class Validator < ActiveModel::Validator
     def validate(record)
       validation = data_schema.call(record[:data])
 
@@ -22,4 +21,6 @@ class Transaction::Charge < Transaction
       end
     end
   end
+
+  validates_with Validator
 end

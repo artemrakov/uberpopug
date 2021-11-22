@@ -1,4 +1,6 @@
 class BillingCycle < ApplicationRecord
+  include AASM
+
   belongs_to :account
 
   aasm :state do

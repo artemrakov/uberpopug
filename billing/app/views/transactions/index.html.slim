@@ -1,0 +1,25 @@
+h2 Current Account
+ul
+  li = "Email: #{current_account.email}"
+  li = "Name: #{current_account.full_name}"
+  li = current_account.role
+  li = current_account.public_id
+
+br
+  h2 All transactions
+  table.table.my-2
+    thead
+      tr
+        th Id
+        th Type
+        th Amount
+        th Entry
+        th public_id
+    tbody
+      - @transactions.each do |translation|
+        tr
+          td = translation.id
+          td = translation.type
+          td = translation.amount
+          td = translation.entry
+          td = translation.public_id

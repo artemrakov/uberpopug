@@ -44,17 +44,21 @@ class KarafkaApp < Karafka::App
   # )
 
   consumer_groups.draw do
+    topic 'accounts-stream' do
+      consumer AccountsStreamConsumer
+    end
+
     topic 'accounts' do
       consumer AccountsConsumer
     end
 
-    topic 'tasks-stream' do
-      consumer TasksStreamConsumer
-    end
+    # topic 'tasks-stream' do
+    #   consumer TasksStreamConsumer
+    # end
 
-    topic 'tasks-lifecycle' do
-      consumer TasksLifecycleConsumer
-    end
+    # topic 'tasks-lifecycle' do
+    #   consumer TasksLifecycleConsumer
+    # end
   end
 end
 

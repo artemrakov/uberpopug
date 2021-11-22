@@ -5,7 +5,7 @@ class Transaction < ApplicationRecord
     reload
   end
 
-  enum entry: {
+  enum accounting_entry: {
     credit: 'credit',
     debit: 'debit'
   }

@@ -5,7 +5,7 @@ class CreateAuthIdentities < ActiveRecord::Migration[6.1]
       t.string :provider
       t.string :token
       t.string :login
-      t.references :accounts, null: false, foreign_key: true
+      t.references :account, null: false, foreign_key: true
 
       t.timestamps
     end
