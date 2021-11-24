@@ -16,8 +16,6 @@ class Transaction::Payout < Transaction
         required(:task_public_id).filled(:string)
         required(:task_id).filled(:integer)
         required(:description).filled(:string)
-        required(:employee_public_id).filled(:string)
-        required(:account_id).filled(:integer)
       end
     end
   end

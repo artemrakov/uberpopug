@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_22_122148) do
+ActiveRecord::Schema.define(version: 2021_11_24_122148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,8 @@ ActiveRecord::Schema.define(version: 2021_11_22_122148) do
 
   create_table "billing_cycles", force: :cascade do |t|
     t.string "status"
-    t.string "period"
+    t.datetime "started_at"
+    t.datetime "ended_at"
     t.bigint "account_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -50,8 +51,10 @@ ActiveRecord::Schema.define(version: 2021_11_22_122148) do
     t.string "status"
     t.bigint "transaction_id", null: false
     t.bigint "billing_cycle_id", null: false
+    t.bigint "account_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_payments_on_account_id"
     t.index ["billing_cycle_id"], name: "index_payments_on_billing_cycle_id"
     t.index ["transaction_id"], name: "index_payments_on_transaction_id"
   end
@@ -70,12 +73,19 @@ ActiveRecord::Schema.define(version: 2021_11_22_122148) do
     t.string "accounting_entry"
     t.uuid "public_id", default: -> { "gen_random_uuid()" }, null: false
     t.integer "amount"
+    t.bigint "billing_cycle_id", null: false
+    t.bigint "account_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["billing_cycle_id"], name: "index_transactions_on_billing_cycle_id"
   end
 
   add_foreign_key "auth_identities", "accounts"
   add_foreign_key "billing_cycles", "accounts"
+  add_foreign_key "payments", "accounts"
   add_foreign_key "payments", "billing_cycles"
   add_foreign_key "payments", "transactions"
+  add_foreign_key "transactions", "accounts"
+  add_foreign_key "transactions", "billing_cycles"
 end
