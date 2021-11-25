@@ -20,9 +20,16 @@ class TransactionsConsumer < ApplicationConsumer
             account: account
           )
 
+          # payment_created = PaymentEvent.new.created
+          # EventSender.serve! (event)
+
+
           # call payment provider
 
           payment.complete!
+
+          # payment_completed = PaymentEvent.new.completed
+          # EventSender.serve! (event)
         end
       else
         # store in db
