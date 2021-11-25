@@ -9,11 +9,17 @@ class TasksStreamConsumer < ApplicationConsumer
 
       case payload['event_name']
       when 'TaskCreated'
+        cost = (10..20).to_a.sample * 100
+
         Task.create!(
           public_id: data['public_id'],
-          description: data['description']
+          description: data['description'],
+          cost: cost
         )
-      else
+
+        event = StreamingTaskEvent.new.updated(task)
+        EventSender.serve!(event: event, type: 'tasks.updated', version: 1, topic: 'task-stream')
+     else
         # store in db
       end
     end

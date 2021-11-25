@@ -10,20 +10,17 @@ class TasksLifecycleConsumer < ApplicationConsumer
       case payload['event_name']
       when 'TaskAssigned'
         ActiveRecord::Base.transaction do
-          cost = (10..20).to_a.sample * 100
-
           task = Task.find_by!(public_id: data['public_id'])
-          task.update!(cost: cost)
 
           account = Account.find_by!(public_id: data['employee_public_id'])
           billing_cycle = BillingCycle.find_or_create_by!(status: :in_process, account: account)
 
-          balance = account.balance - cost
+          balance = account.balance - task.cost
           account.update!(balance: balance)
 
-          Transaction::Charge.create!(
+          transaction = Transaction::Charge.create!(
             accounting_entry: 'credit',
-            amount: cost,
+            amount: task.cost,
             billing_cycle: billing_cycle,
             account: account,
             data: {
@@ -32,6 +29,9 @@ class TasksLifecycleConsumer < ApplicationConsumer
               description: "Task Assigned ##{task.public_id} to #{account.email}"
             }
           )
+
+          event = TransactionEvent.new.charge(transaction)
+          EventSender.serve!(event: event, type: 'transactions.charge', topic: 'transactions')
         end
       when 'TaskReassigned'
         ActiveRecord::Base.transaction do
@@ -53,6 +53,9 @@ class TasksLifecycleConsumer < ApplicationConsumer
               description: "Task Reassigned ##{task.public_id} to #{account.email}"
             }
           )
+
+          event = TransactionEvent.new.charge(transaction)
+          EventSender.serve!(event: event, type: 'transactions.charge', topic: 'transactions')
         end
       when 'TaskCompleted'
         ActiveRecord::Base.transaction do
@@ -64,7 +67,7 @@ class TasksLifecycleConsumer < ApplicationConsumer
           balance = account.balance + reward
           account.update!(balance: balance)
 
-          Transaction::Payout.create!(
+          transaction = Transaction::Payout.create!(
             accounting_entry: 'debit',
             amount: reward,
             billing_cycle: billing_cycle,
@@ -75,6 +78,9 @@ class TasksLifecycleConsumer < ApplicationConsumer
               description: "Task Completed ##{task.public_id} by #{account.email}"
             }
           )
+
+          event = TransactionEvent.new.payout(transaction)
+          EventSender.serve!(event: event, type: 'transaction.payout', topic: 'transactions')
         end
       else
         # store in db

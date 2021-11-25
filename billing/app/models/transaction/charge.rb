@@ -1,4 +1,11 @@
 class Transaction::Charge < Transaction
+  def task_public_id
+    data['task_public_id']
+  end
+
+  def description
+    data['description']
+  end
 
   class Validator < ActiveModel::Validator
     def validate(record)

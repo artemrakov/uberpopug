@@ -8,16 +8,21 @@ class BillingCycleService
       end
 
       net = amount_hash[:debit] - amount_hash[:credit]
-      p net
 
       if net.negative?
         can_not_close(billing_cycle, net)
+
+        cannot_close_event = BillingCycle.new.cannot_close(billing_cycle)
+        EventSender.serve!(event: cannot_close_event, type: 'billing_cycles.cannot_close', topics: 'billing-cycle-lifecycle')
 
         return
       end
 
       billing_cycle.close!
-      # maybe send event Billing Cycle Closed
+
+      closed_event = BillingCycle.new.closed(billing_cycle)
+      EventSender.serve!(event: closed_event, type: 'billing_cycles.closed', topics: 'billing-cycle-lifecycle')
+
       return if net.zero?
 
       payment_transaction = Transaction::Payment.create!(
@@ -31,22 +36,8 @@ class BillingCycleService
       )
       account.update!(balance: 0)
 
-      # event = {
-      #   transaction_public_id: payment_transaction.public_id,
-      #   billing_cycle_public_id: billing_cycle.public_id,
-      #   account_public_id: account.public_id,
-      #   amount: net
-      # }
-      # send event PaymentTransactionApplied, topic: 'payments' -> see PaymentsConsumer
-    end
-
-    def can_not_close(billing_cycle, amount)
-      event = {
-        billing_cycle_public_id: billing_cycle.public_id,
-        amount: amount,
-        account_public_id: account.public_id
-      }
-      # send event CannotCloseBillingCycle, topic: 'payments'
+      payment_event = Transaction.new.payment(payment_transaction)
+      EventSender.serve!(event: payment_event, type: 'transitions.payment', topics: 'transitions')
     end
   end
 end
