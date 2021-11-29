@@ -7,6 +7,7 @@ class Payment < ApplicationRecord
 
   aasm :status do
     state :created, initial: true
+    state :waiting_for_payment
     state :failed
     state :completed
 
