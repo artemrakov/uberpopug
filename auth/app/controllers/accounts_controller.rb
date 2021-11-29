@@ -12,22 +12,10 @@ class AccountsController < ApplicationController
   end
 
   def create
-    @account = Account::SignUpForm.new(params[:account_sign_up_form])
+    @account = AccountMutator.create(params[:account_sign_up_form])
 
-    if @account.save
+    if @account.persisted?
       sign_in @account
-
-      event = {
-        event_name: 'AccountCreated',
-        data: {
-          public_id: @account.public_id,
-          email: @account.email,
-          full_name: @account.full_name,
-          role: @account.role,
-          position: @account.position
-        }
-      }
-      WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts-stream')
 
       redirect_to params[:return_to] || root_path
     else
@@ -41,19 +29,9 @@ class AccountsController < ApplicationController
 
   def update
     @account = Account.find(params[:id])
+    result = AccountMutator.update(@account, account_params)
 
-    if @account.update(account_params)
-      event = {
-        event_name: 'AccountUpdated',
-        data: {
-          public_id: @account.public_id,
-          email: @account.email,
-          full_name: @account.full_name,
-          position: @account.position
-        }
-      }
-      WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts-stream')
-
+    if result
       redirect_to root_path
     else
       render :edit
@@ -62,17 +40,9 @@ class AccountsController < ApplicationController
 
   def set_role
     @account = Account.find(params[:id])
+    result = AccountMutator.set_role(@account, account_params[:role])
 
-    if @account.update(role: account_params[:role])
-      event = {
-        event_name: 'AccountRoleChanged',
-        data: {
-          public_id: @account.public_id,
-          role: @account.role
-        }
-      }
-      WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts')
-
+    if result
       redirect_to root_path
     else
       render :edit
@@ -81,13 +51,7 @@ class AccountsController < ApplicationController
 
   def destroy
     @account = Account.find(params[:id])
-    @account.mark_as_removed!
-
-    event = {
-      event_name: 'AccountDeleted',
-      data: { public_id: @account.public_id }
-    }
-    WaterDrop::SyncProducer.call(event.to_json, topic: 'accounts-stream')
+    AccountMutator.destroy(@account)
 
     redirect_to root_path
   end

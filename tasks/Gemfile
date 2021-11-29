@@ -18,6 +18,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'karafka'
 gem 'waterdrop'
+gem 'schema_registry', path: '../event_schema_registry/ruby/'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

@@ -10,31 +10,9 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = Task.new(task_params)
-    employee = Account.employee.sample
-    @task.employee = employee
+    @task = TaskMutator.create(task_params)
 
-    if @task.save
-      created_event = {
-        event_name: 'TaskCreated',
-        data: {
-          description: @task.description,
-          public_id: @task.public_id,
-          status: @task.status,
-          employee_public_id: @task.employee.public_id
-        }
-      }
-      WaterDrop::SyncProducer.call(created_event.to_json, topic: 'tasks-stream')
-
-      assigned_event = {
-        event_name: 'TaskAssigned',
-        data: {
-          public_id: @task.public_id,
-          employee_public_id: @task.employee.public_id
-        }
-      }
-      WaterDrop::SyncProducer.call(assigned_event.to_json, topic: 'tasks')
-
+    if @task.persisted?
       redirect_to root_path
     else
       render :new
@@ -53,13 +31,8 @@ class TasksController < ApplicationController
     task = Task.find(params[:id])
     task.complete!
 
-    event = {
-      event_name: 'TaskCompleted',
-      data: {
-        public_id: task.public_id
-      }
-    }
-    WaterDrop::SyncProducer.call(event.to_json, topic: 'tasks-lifecycle')
+    event = LifecycleTaskEvent.new.completed(task)
+    EventSender.serve!(event: event, type: 'tasks.completed', topic: 'tasks-lifecycle')
 
     redirect_to root_path
   end
