@@ -8,23 +8,14 @@ class BillingCycleService
       end
 
       net = amount_hash[:debit] - amount_hash[:credit]
-
-      if net.negative?
-        can_not_close(billing_cycle, net)
-
-        cannot_close_event = BillingCycle.new.cannot_close(billing_cycle)
-        EventSender.serve!(event: cannot_close_event, type: 'billing_cycles.cannot_close', topics: 'billing-cycle-lifecycle')
-
-        return
-      end
-
       billing_cycle.close!
 
       closed_event = BillingCycle.new.closed(billing_cycle)
       EventSender.serve!(event: closed_event, type: 'billing_cycles.closed', topics: 'billing-cycle-lifecycle')
 
-      return if net.zero?
+      return if net.negative? # do i need to do something about this ?
 
+      # why do we need this payment ???
       payment_transaction = Transaction::Payment.create!(
         amount: net,
         billing_cycle: billing_cycle,
@@ -34,7 +25,6 @@ class BillingCycleService
           description: "Payment to user account #{account.email}"
         }
       )
-      account.update!(balance: 0)
 
       payment_event = Transaction.new.payment(payment_transaction)
       EventSender.serve!(event: payment_event, type: 'transitions.payment', topics: 'transitions')
